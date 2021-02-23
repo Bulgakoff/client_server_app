@@ -9,7 +9,7 @@ import requests
 import time
 import click
 
-# Ответы сервера
+# Ответы сервераa
 LIST_AUTH = [
     {
         "response": 200,
