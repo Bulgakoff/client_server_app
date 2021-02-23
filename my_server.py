@@ -32,34 +32,39 @@ def current_start_server(addr, port):
     lst_answers_after_auth_json = json.dumps(LIST_AUTH)
     probe_server_response_json = json.dumps(probe_server_response)
 
-    with socket(AF_INET, SOCK_STREAM) as s:  # Создает сокет TCP
-        s.bind((addr, int(port)))  # Присваивает порт 8888 (только по данному порту)
-        s.listen()  # просигнализировать о готовности принимать соединения
+    with socket(AF_INET, SOCK_STREAM) as s:
+        s.bind((addr, int(port)))
+        s.listen()
 
-
+        msg_full = ''
         while True:
-            client, addr = s.accept()  # принять запрос на установку соединения
-            with closing(client) as cl:  # затем закрываем сокет клиента
-                data = cl.recv(640)  # принимает сервер "Hi server!" от клиента
+            client, addr = s.accept()
+            with closing(client) as cl:
+                data = cl.recv(640)
                 data_dict = json.loads(data.decode("utf-8"))
                 auth_response_server_list = json.loads(lst_answers_after_auth_json)
                 if data_dict['action'] == 'authenticate':
                     for var_response in auth_response_server_list:
                         if var_response['response'] == 200:
                             msg = var_response['alert']
+                            msg_full+=msg
                             cl.send(bytes(msg, 'utf-8'))
+
                 else:
                     msg = auth_response_server_list[1]['error']
                     cl.send(bytes(msg, 'utf-8'))
+                    msg_full += msg
 
-                if data_dict['action']=="presence":
-                    msg = data_dict['action']
-                    cl.send(bytes(msg, 'utf-8'))
-
+                # if data_dict['action'] == "presence":
+                #     msg = data_dict['action']
+                #     print(f'--===+++===>{msg}')
+                #     msg_full += msg
+                #
+                #     cl.send(bytes(msg, 'utf-8'))
 
                 print(
                     "Сообщение: ", "action == ", data_dict['action'],
-                    type(data.decode("utf-8")), type(auth_response_server_list),
+                    type(data.decode("utf-8")),
                     ", было отправлено клиентом: "
                 )
 

@@ -35,15 +35,11 @@ def current_start_client(addr, port):
     msg_presence_json = json.dumps(PRESENTS_MSG)
     quit_json = json.dumps(quit)
 
-    s = socket(AF_INET, SOCK_STREAM)  # Создать сокет TCP
-    s.connect((addr, int(port)))  # Соединиться с сервером
-    s.send(auth_from_client_json.encode("utf-8"))  # — >>>2 отправить сообщение серверу>>>
-    data = s.recv(640)  # >>>3. получаем данные (ответ) от сервера>>>
-    data_str= data.decode("utf-8")
-    match = re.findall(r'Ok', data_str)
-    if match:
-        s.send(msg_presence_json.encode("utf-8"))
-    print("Сообщение от сервера: ",data_str,  # <<<4. разобрать сообщение сервера
+    s = socket(AF_INET, SOCK_STREAM)
+    s.connect((addr, int(port)))
+    s.send(auth_from_client_json.encode("utf-8"))
+    data = s.recv(640)
+    print("Сообщение от сервера: ",data.decode('utf-8'),
           ", длиной ", len(data), " байт")
     s.close()
 @click.command()
