@@ -57,13 +57,13 @@ def current_start_server(addr, port):
                     msg = auth_response_server_list[1]['error']
                     cl.send(bytes(msg, encodding))
                     msg_full += msg
+                # тут не получается зайтив условие:
+                elif data_dict['action'] == "presence":
+                    msg = data_dict['action']
+                    print(f'--===+++===>{msg}')
+                    msg_full += msg
 
-                # if data_dict['action'] == "presence":
-                #     msg = data_dict['action']
-                #     print(f'--===+++===>{msg}')
-                #     msg_full += msg
-                #
-                #     cl.send(bytes(msg, encodding))
+                    cl.send(bytes(msg, encodding))
 
                 print(
                     "Сообщение: ", "action == ", data_dict['action'],

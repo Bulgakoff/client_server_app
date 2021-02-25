@@ -11,8 +11,8 @@ quit = {
     "action": "quit"
 }
 AUTH_CLIENT = {
-    # "action": "authenticate",
-    "action": "qweqwe",
+    "action": "authenticate",
+    # "action": "qweqwe",
     "time": time.ctime(),
     "user": {
         "account_name": "C0deMaver1ck",
@@ -40,9 +40,19 @@ def current_start_client(addr, port):
     s.connect((addr, int(port)))
     s.send(auth_from_client_json.encode(encodding))
     data = s.recv(640)
+    if data.decode(encodding)=="This could be 'wrong password' or 'no account with that name'":
+        # на этом этапе стоп:
+        s.send(msg_presence_json.encode(encodding))
     print("Сообщение от сервера: ",data.decode(encodding),
           ", длиной ", len(data), " байт", "отправлено ",time.ctime())
     s.close()
+
+
+
+
+
+
+
 @click.command()
 @click.argument('addr')
 @click.argument('port')
