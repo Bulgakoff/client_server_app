@@ -53,7 +53,7 @@ def current_start_server(addr, port):
                             msg_full += msg
                             cl.send(bytes(msg, encodding))
 
-                elif data_dict['action'] == 'authenticate':
+                elif data_dict['action'] != 'authenticate':
                     msg = auth_response_server_list[1]['error']
                     cl.send(bytes(msg, encodding))
                     msg_full += msg
