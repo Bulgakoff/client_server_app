@@ -41,7 +41,6 @@ def current_start_server(addr, port):
         msg_full = ''
         while True:
             client, addr = s.accept()
-            # while True:
             with closing(client) as cl:
                 data = cl.recv(640)
                 data_dict = json.loads(data.decode(encodding))

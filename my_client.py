@@ -11,8 +11,8 @@ quit = {
     "action": "quit"
 }
 AUTH_CLIENT = {
-    "action": "authenticate",
-    # "action": "qweqwe",
+    # "action": "authenticate",
+    "action": "qweqwe",
     "time": time.ctime(),
     "user": {
         "account_name": "C0deMaver1ck",
