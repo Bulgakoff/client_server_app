@@ -11,8 +11,8 @@ quit = {
     'action': 'quit'
 }
 AUTH_CLIENT = {
-    # 'action': 'authen/ticate',
-    'action': 'dfgdfg',
+    'action': 'authenticate',
+    # 'action': 'dfgdfg',
     'time': time.ctime(),
     'user': {
         'account_name': 'C0deMaver1ck',
@@ -70,11 +70,6 @@ def current_start_client(addr, port):
                 tcpCliSock.send(quit_json.encode(ENCODE))
                 time.sleep(3)
                 break
-
-
-
-
-
 
     tcpCliSock.close()
 
