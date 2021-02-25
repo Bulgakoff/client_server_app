@@ -12,7 +12,8 @@ quit = {
 }
 AUTH_CLIENT = {
     "action": "authenticate",
-    "time": time.time(),
+    # "action": "qweqwe",
+    "time": time.ctime(),
     "user": {
         "account_name": "C0deMaver1ck",
         "password": "CorrectHorseBatterStaple"
@@ -40,7 +41,7 @@ def current_start_client(addr, port):
     s.send(auth_from_client_json.encode("utf-8"))
     data = s.recv(640)
     print("Сообщение от сервера: ",data.decode('utf-8'),
-          ", длиной ", len(data), " байт")
+          ", длиной ", len(data), " байт", "отправлено ",time.ctime())
     s.close()
 @click.command()
 @click.argument('addr')

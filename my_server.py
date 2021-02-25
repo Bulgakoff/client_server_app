@@ -35,6 +35,7 @@ def current_start_server(addr, port):
     with socket(AF_INET, SOCK_STREAM) as s:
         s.bind((addr, int(port)))
         s.listen()
+        print('Server is listening......')
 
         msg_full = ''
         while True:
