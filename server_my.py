@@ -42,6 +42,7 @@ def current_start_server(addr, port):
         print(f'Connected from: {addr}')
         while True:  # цикл связи
             data = tcpCliSock.recv(BUFSIZ)  # принимает данные от клиента
+
             data_dict = json.loads(data.decode(ENCODE))
             auth_response_server_list = json.loads(lst_answers_after_auth_json)
             if not data:
@@ -60,8 +61,10 @@ def current_start_server(addr, port):
                 tcpCliSock.send('finish'.encode(ENCODE))
                 print('прилетел quit')
             elif data_dict['action'] != 'authenticate':
-                msg = auth_response_server_list[1]['error']
-                tcpCliSock.send(bytes('You sent me != authenticate" {}"'.format(msg), 'utf8'))
+                for var_response in auth_response_server_list:
+                    if var_response['response'] == 402:
+                        msg = var_response['error']
+                        tcpCliSock.send(bytes(msg, ENCODE))
                 print('ошибка auth')
 
         tcpCliSock.close()  # закрываем сеанс (сокет) с клиентом

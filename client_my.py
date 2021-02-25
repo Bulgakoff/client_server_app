@@ -13,7 +13,7 @@ quit = {
 AUTH_CLIENT = {
     'action': 'authenticate',
     # 'action': 'dfgdfg',
-    'time': time.time(),
+    'time': time.ctime(),
     'user': {
         'account_name': 'C0deMaver1ck',
         'password': 'CorrectHorseBatterStaple'
@@ -21,7 +21,7 @@ AUTH_CLIENT = {
 }
 PRESENTS_MSG = {  # сообщение о присутствии — presence
     'action': 'presence',
-    'time': time.time(),
+    'time': time.ctime(),
     'type': 'status',
     'user': {
         'account_name': 'C0deMaver1ck',
@@ -46,19 +46,32 @@ def current_start_client(addr, port):
     while True:
         time.sleep(3)
         tcpCliSock.send(auth_from_client_json.encode(ENCODE))
-        print(f'Recieved auth ')
+        # print(f'Recieved auth ')
         data = tcpCliSock.recv(BUFSIZ)  # ожидание (получение) ответа
+
         if data.decode(ENCODE) == 'An optional message/notification - Ok!':
             tcpCliSock.send(msg_presence_json.encode(ENCODE))
             print(data.decode(ENCODE))
 
-        else:
+        if data.decode(ENCODE) != 'spam':
+            qwes = data.decode(ENCODE)
+            match = re.findall(r'wrong', qwes)
+            if match:
+                print('authentication denied\n')
+                print(data.decode(ENCODE))
+                break
+
+        if data.decode(ENCODE) != 'spam':
             qwe = data.decode(ENCODE)
             match = re.findall(r'probe!!!', qwe)
             if match:
                 print('probe!!!')
                 tcpCliSock.send(quit_json.encode(ENCODE))
                 break
+
+
+
+
 
 
     tcpCliSock.close()
