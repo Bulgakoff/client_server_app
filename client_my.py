@@ -11,8 +11,8 @@ quit = {
     'action': 'quit'
 }
 AUTH_CLIENT = {
-    'action': 'authenticate',
-    # 'action': 'dfgdfg',
+    # 'action': 'authen/ticate',
+    'action': 'dfgdfg',
     'time': time.ctime(),
     'user': {
         'account_name': 'C0deMaver1ck',
@@ -54,16 +54,17 @@ def current_start_client(addr, port):
             print(data.decode(ENCODE))
 
         if data.decode(ENCODE) != 'spam':
-            qwes = data.decode(ENCODE)
-            match = re.findall(r'wrong', qwes)
+            egg = data.decode(ENCODE)
+            match = re.findall(r'wrong', egg)
             if match:
                 print('authentication denied\n')
+                time.sleep(4)
                 print(data.decode(ENCODE))
                 break
 
         if data.decode(ENCODE) != 'spam':
-            qwe = data.decode(ENCODE)
-            match = re.findall(r'probe!!!', qwe)
+            egg = data.decode(ENCODE)
+            match = re.findall(r'probe!!!', egg)
             if match:
                 print('probe!!!')
                 tcpCliSock.send(quit_json.encode(ENCODE))
