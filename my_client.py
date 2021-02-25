@@ -38,9 +38,11 @@ def current_start_client(addr, port):
 
     s = socket(AF_INET, SOCK_STREAM)
     s.connect((addr, int(port)))
+
+
     s.send(auth_from_client_json.encode(encodding))
     data = s.recv(640)
-    if data.decode(encodding)=="This could be 'wrong password' or 'no account with that name'":
+    if data.decode(encodding)=="An optional message/notification - Ok!":
         # на этом этапе стоп:
         s.send(msg_presence_json.encode(encodding))
     print("Сообщение от сервера: ",data.decode(encodding),
