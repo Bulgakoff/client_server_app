@@ -24,6 +24,7 @@ probe_server_response = {
     "action": "probe!!!",
     "time": time.time(),
 }
+encodding = 'utf-8'
 
 
 # =====================server=======================================
@@ -40,20 +41,21 @@ def current_start_server(addr, port):
         msg_full = ''
         while True:
             client, addr = s.accept()
+            # while True:
             with closing(client) as cl:
                 data = cl.recv(640)
-                data_dict = json.loads(data.decode("utf-8"))
+                data_dict = json.loads(data.decode(encodding))
                 auth_response_server_list = json.loads(lst_answers_after_auth_json)
                 if data_dict['action'] == 'authenticate':
                     for var_response in auth_response_server_list:
                         if var_response['response'] == 200:
                             msg = var_response['alert']
-                            msg_full+=msg
-                            cl.send(bytes(msg, 'utf-8'))
+                            msg_full += msg
+                            cl.send(bytes(msg, encodding))
 
-                else:
+                elif data_dict['action'] == 'authenticate':
                     msg = auth_response_server_list[1]['error']
-                    cl.send(bytes(msg, 'utf-8'))
+                    cl.send(bytes(msg, encodding))
                     msg_full += msg
 
                 # if data_dict['action'] == "presence":
@@ -61,11 +63,11 @@ def current_start_server(addr, port):
                 #     print(f'--===+++===>{msg}')
                 #     msg_full += msg
                 #
-                #     cl.send(bytes(msg, 'utf-8'))
+                #     cl.send(bytes(msg, encodding))
 
                 print(
                     "Сообщение: ", "action == ", data_dict['action'],
-                    type(data.decode("utf-8")),
+                    type(data.decode(encodding)),
                     ", было отправлено клиентом: "
                 )
 

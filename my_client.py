@@ -28,7 +28,7 @@ PRESENTS_MSG = {  # сообщение о присутствии — presence
         "status": "Yep, I am here!"
     }
 }
-
+encodding = 'utf-8'
 
 # ========================client===================================================
 def current_start_client(addr, port):
@@ -38,9 +38,9 @@ def current_start_client(addr, port):
 
     s = socket(AF_INET, SOCK_STREAM)
     s.connect((addr, int(port)))
-    s.send(auth_from_client_json.encode("utf-8"))
+    s.send(auth_from_client_json.encode(encodding))
     data = s.recv(640)
-    print("Сообщение от сервера: ",data.decode('utf-8'),
+    print("Сообщение от сервера: ",data.decode(encodding),
           ", длиной ", len(data), " байт", "отправлено ",time.ctime())
     s.close()
 @click.command()
