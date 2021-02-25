@@ -59,7 +59,7 @@ def current_start_server(addr, port):
                 print('прилетел presence')
             elif data_dict['action'] == 'quit':
                 tcpCliSock.send('finish'.encode(ENCODE))
-                print('прилетел quit')
+                print(f'прилетел quit {time.ctime()}')
             elif data_dict['action'] != 'authenticate':
                 for var_response in auth_response_server_list:
                     if var_response['response'] == 402:

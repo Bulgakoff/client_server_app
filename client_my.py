@@ -67,6 +67,7 @@ def current_start_client(addr, port):
             if match:
                 print('probe!!!')
                 tcpCliSock.send(quit_json.encode(ENCODE))
+                time.sleep(3)
                 break
 
 
