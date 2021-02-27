@@ -32,15 +32,15 @@ def current_start_server(addr, port):
     PROBE_json = json.dumps(PROBE)
 
     # tcpSerSock = socket(AF_INET, SOCK_STREAM)  # создаем сокет сервера
-    with socket(AF_INET, SOCK_STREAM) as sTsp: # создаем сокет сервера
-        sTsp.bind((addr, int(port)))  # связываем сокет с адресом И ПОРТОМ
-        sTsp.listen(5)  # клиентов 5
+    with socket(AF_INET, SOCK_STREAM) as s_tsp: # создаем сокет сервера
+        s_tsp.bind((addr, int(port)))  # связываем сокет с адресом И ПОРТОМ
+        s_tsp.listen(5)  # клиентов 5
         print('Server in listening..........')
 
         while True:  # бесконечный цикл сервера
             print('Waiting for client...')
             # tcpCliSock, addr = tcpSerSock.accept()  # ждем клиента, при соединении .accept()
-            tcpCliSock, addr = sTsp.accept()  # ждем клиента, при соединении .accept()
+            tcpCliSock, addr = s_tsp.accept()  # ждем клиента, при соединении .accept()
             with closing(tcpCliSock):
                 print(f'Connected from: {addr}')
                 while True:  # цикл связи
