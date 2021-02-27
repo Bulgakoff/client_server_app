@@ -41,37 +41,38 @@ def current_start_client(addr, port):
     msg_presence_json = json.dumps(PRESENTS_MSG)
     quit_json = json.dumps(quit)
 
-    tcpCliSock = socket(AF_INET, SOCK_STREAM)
-    tcpCliSock.connect((addr, int(port)))  # установка связи с сервером
-    while True:
-        time.sleep(3)
-        tcpCliSock.send(auth_from_client_json.encode(ENCODE))
-        # print(f'Recieved auth ')
-        data = tcpCliSock.recv(BUFSIZ)  # ожидание (получение) ответа
+    # tcpCliSock = socket(AF_INET, SOCK_STREAM)
+    with socket(AF_INET, SOCK_STREAM) as tcpCliSock:
+        tcpCliSock.connect((addr, int(port)))  # установка связи с сервером
+        while True:
+            time.sleep(3)
+            tcpCliSock.send(auth_from_client_json.encode(ENCODE))
+            # print(f'Recieved auth ')
+            data = tcpCliSock.recv(BUFSIZ)  # ожидание (получение) ответа
 
-        if data.decode(ENCODE) == 'An optional message/notification - Ok!':
-            tcpCliSock.send(msg_presence_json.encode(ENCODE))
-            print(data.decode(ENCODE))
-
-        if data.decode(ENCODE) != 'spam':
-            egg = data.decode(ENCODE)
-            match = re.findall(r'wrong', egg)
-            if match:
-                print('authentication denied\n')
-                time.sleep(4)
+            if data.decode(ENCODE) == 'An optional message/notification - Ok!':
+                tcpCliSock.send(msg_presence_json.encode(ENCODE))
                 print(data.decode(ENCODE))
-                break
 
-        if data.decode(ENCODE) != 'spam':
-            egg = data.decode(ENCODE)
-            match = re.findall(r'probe!!!', egg)
-            if match:
-                print('probe!!!')
-                tcpCliSock.send(quit_json.encode(ENCODE))
-                time.sleep(3)
-                break
+            if data.decode(ENCODE) != 'spam':
+                egg = data.decode(ENCODE)
+                match = re.findall(r'wrong', egg)
+                if match:
+                    print('authentication denied\n')
+                    time.sleep(4)
+                    print(data.decode(ENCODE))
+                    break
 
-    tcpCliSock.close()
+            if data.decode(ENCODE) != 'spam':
+                egg = data.decode(ENCODE)
+                match = re.findall(r'probe!!!', egg)
+                if match:
+                    print('probe!!!')
+                    tcpCliSock.send(quit_json.encode(ENCODE))
+                    time.sleep(3)
+                    break
+
+    # tcpCliSock.close()
 
 
 # msg_full = ''
