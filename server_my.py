@@ -31,46 +31,49 @@ def current_start_server(addr, port):
     lst_answers_after_auth_json = json.dumps(LIST_AUTH)
     PROBE_json = json.dumps(PROBE)
 
-    tcpSerSock = socket(AF_INET, SOCK_STREAM)  # создаем сокет сервера
-    tcpSerSock.bind((addr, int(port)))  # связываем сокет с адресом И ПОРТОМ
-    tcpSerSock.listen(5)  # клиентов 5
-    print('Server in listening..........')
+    # tcpSerSock = socket(AF_INET, SOCK_STREAM)  # создаем сокет сервера
+    with socket(AF_INET, SOCK_STREAM) as sTsp: # создаем сокет сервера
+        sTsp.bind((addr, int(port)))  # связываем сокет с адресом И ПОРТОМ
+        sTsp.listen(5)  # клиентов 5
+        print('Server in listening..........')
 
-    while True:  # бесконечный цикл сервера
-        print('Waiting for client...')
-        tcpCliSock, addr = tcpSerSock.accept()  # ждем клиента, при соединении .accept()
-        print(f'Connected from: {addr}')
-        while True:  # цикл связи
-            data = tcpCliSock.recv(BUFSIZ)  # принимает данные от клиента
+        while True:  # бесконечный цикл сервера
+            print('Waiting for client...')
+            # tcpCliSock, addr = tcpSerSock.accept()  # ждем клиента, при соединении .accept()
+            tcpCliSock, addr = sTsp.accept()  # ждем клиента, при соединении .accept()
+            with closing(tcpCliSock):
+                print(f'Connected from: {addr}')
+                while True:  # цикл связи
+                    data = tcpCliSock.recv(BUFSIZ)  # принимает данные от клиента
+                    data_dict = json.loads(data.decode(ENCODE))
+                    auth_response_server_list = json.loads(lst_answers_after_auth_json)
+                    if not data:
+                        break  # разрываем связь если данных нет
+                    if data_dict['action'] == 'authenticate':
+                        for var_response in auth_response_server_list:
+                            if var_response['response'] == 200:
+                                msg = var_response['alert']
+                                tcpCliSock.send(bytes(msg, ENCODE))
 
-            data_dict = json.loads(data.decode(ENCODE))
-            auth_response_server_list = json.loads(lst_answers_after_auth_json)
-            if not data:
-                break  # разрываем связь если данных нет
-            if data_dict['action'] == 'authenticate':
-                for var_response in auth_response_server_list:
-                    if var_response['response'] == 200:
-                        msg = var_response['alert']
-                        tcpCliSock.send(bytes(msg, ENCODE))
-
-            elif data_dict['action'] == 'presence':
-                msg = PROBE_json.encode(ENCODE)
-                tcpCliSock.send(msg)
-                print('прилетел presence')
-            elif data_dict['action'] == 'quit':
-                tcpCliSock.send('finish'.encode(ENCODE))
-                print(f'прилетел quit {time.ctime()}')
-            elif data_dict['action'] != 'authenticate':
-                for var_response in auth_response_server_list:
-                    if var_response['response'] == 402:
-                        msg = var_response['error']
-                        tcpCliSock.send(bytes(msg, ENCODE))
-                print('ошибка auth')
-
-        tcpCliSock.close()  # закрываем сеанс (сокет) с клиентом
+                    elif data_dict['action'] == 'presence':
+                        msg = PROBE_json.encode(ENCODE)
+                        tcpCliSock.send(msg)
+                        print('прилетел presence')
+                    elif data_dict['action'] == 'quit':
+                        tcpCliSock.send('finish'.encode(ENCODE))
+                        print(f'прилетел quit {time.ctime()}')
+                    elif data_dict['action'] != 'authenticate':
+                        for var_response in auth_response_server_list:
+                            if var_response['response'] == 402:
+                                msg = var_response['error']
+                                tcpCliSock.send(bytes(msg, ENCODE))
+                        print('ошибка auth')
 
 
-        tcpSerSock.close()  # закрытие сокета сервера
+            # tcpCliSock.close()  # закрываем сеанс (сокет) с клиентом
+
+
+            # tcpSerSock.close()  # закрытие сокета сервера
 
 
 
