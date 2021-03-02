@@ -1,9 +1,7 @@
 from contextlib import closing
 from socket import *
 import json
-import requests
 import time
-import click
 
 # Ответы сервераa
 LIST_AUTH = [
@@ -59,24 +57,19 @@ def py_dumps_str_foo(param_server):# from py (dict) to str
 def current_start_server(addr, port):
     lst_answers_after_auth_json = py_dumps_str_foo(LIST_AUTH)
     PROBE_json = py_dumps_str_foo(PROBE)
-    # tcpSerSock = socket(AF_INET, SOCK_STREAM)  # создаем сокет сервера
     with tcp_sock_create() as s_tsp:  # создаем сокет сервера
         bind_create_from_user(s_tsp, addr, port)  # связываем сокет с адресом И ПОРТОМ
         print(f'======================')
-        # s_tsp.listen(5)  # клиентов 5
         server_listen_ready(s_tsp)
         print('Server in listening..........')
 
         while True:  # бесконечный цикл сервера
             print('Waiting for client...')
-            # tcpCliSock, addr = tcpSerSock.accept()  # ждем клиента, при соединении .accept()
             tcpCliSock, addr = s_tsp.accept()  # ждем клиента, при соединении .accept()
             with closing(tcpCliSock):
                 print(f'Connected from: {addr[0]}')
                 while True:  # цикл связи
-                    # data = tcpCliSock.recv(BUFSIZ)  # принимает данные от клиента
                     data = recved_data(tcpCliSock)
-                    # data_dict = json.loads(data.decode(ENCODE))
                     data_str = b_decode_str_foo(data)
                     data_dict = str_loads_dict_foo(data_str)
                     auth_response_server_list = json.loads(lst_answers_after_auth_json)
@@ -102,14 +95,3 @@ def current_start_server(addr, port):
                                 msg = var_response['error']
                                 tcpCliSock.send(bytes(msg, ENCODE))
                         print('ошибка auth')
-
-# ==========click============
-# @click.command()
-# @click.argument('addr')
-# @click.argument('port')
-# def main(addr, port):
-#     current_start_server(addr, port)
-#
-#
-# if __name__ == '__main__':
-#     main()
