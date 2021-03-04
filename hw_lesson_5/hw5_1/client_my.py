@@ -43,6 +43,10 @@ def py_dumps_str_foo(param_user):
 
 
 def tcp_sock_create():
+    try:
+        raise Exception('Misstake')
+    except Exception as e:
+        logging.warning(f'{AF_INET} or {SOCK_STREAM} failed ===> Exception caught!!!')
     return socket(AF_INET, SOCK_STREAM)
 
 
