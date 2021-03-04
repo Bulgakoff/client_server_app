@@ -1,0 +1,11 @@
+2021-03-04 22:44:49,853 - DEBUG - Старт tcp_sock_create  = 69
+2021-03-04 22:44:49,853 - DEBUG - Старт bind_create_from_user  = 71
+2021-03-04 22:44:49,854 - DEBUG - Старт server_listen_ready  = 75
+2021-03-04 22:45:14,287 - DEBUG - Старт b_decode_str_foo  = 89
+2021-03-04 22:45:14,288 - DEBUG - Старт str_loads_dict_foo  = 91
+2021-03-04 22:45:14,291 - DEBUG - Старт b_decode_str_foo  = 89
+2021-03-04 22:45:14,292 - DEBUG - Старт str_loads_dict_foo  = 91
+2021-03-04 22:45:17,305 - DEBUG - Старт b_decode_str_foo  = 89
+2021-03-04 22:45:17,306 - DEBUG - Старт str_loads_dict_foo  = 91
+2021-03-04 22:45:17,310 - DEBUG - Старт b_decode_str_foo  = 89
+2021-03-04 22:45:17,310 - DEBUG - Старт str_loads_dict_foo  = 91
