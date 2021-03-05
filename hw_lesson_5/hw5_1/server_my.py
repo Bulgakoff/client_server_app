@@ -6,8 +6,19 @@ import time
 import click
 import logging
 
-import sserver_log
-
+from sserver_log import setup_logging
+# def setup_logging():
+#     logger = logging.getLogger(__name__)
+#     logger.setLevel(logging.DEBUG)
+#
+#     formatter = logging.Formatter('%(name)s---%(asctime)s - %(levelname)s - %(message)s')
+#     fh = logging.FileHandler('log_dir/ser.log')
+#     fh.setFormatter(formatter)
+#     logger.addHandler(fh)
+#
+#     return logger
+#
+# logger=setup_logging()
 
 # Ответы сервераa
 LIST_AUTH = [
@@ -124,5 +135,5 @@ def main(addr, port):
 #     filename='qwe.log'
 # )
 if __name__ == '__main__':
-    logging.debug('START server!!!!!!!!!!!!!!!')
+    setup_logging.debug('START server!!!!!!!!!!!!!!!')
     main()

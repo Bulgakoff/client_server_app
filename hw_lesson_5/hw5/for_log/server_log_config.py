@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger('app2.main')
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s  = %(lineno)d")
-fh = logging.FileHandler("app2.main.log", encoding='utf-8')
+fh = logging.FileHandler("logs/app2.main.log", encoding='utf-8')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(formatter)
 logger.addHandler(fh)

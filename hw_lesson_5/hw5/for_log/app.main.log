@@ -1,5 +1,0 @@
-2021-03-04 22:45:11,276 - DEBUG - Старт py_dumps_str_foo = 52
-2021-03-04 22:45:11,277 - DEBUG - Старт py_dumps_str_foo = 54
-2021-03-04 22:45:11,277 - DEBUG - Старт py_dumps_str_foo = 56
-2021-03-04 22:45:11,277 - DEBUG - Старт tcp_sock_create = 60
-2021-03-04 22:45:20,309 - DEBUG - Старт current_start_client = 98
