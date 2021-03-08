@@ -73,16 +73,16 @@ def current_start_client(addr, port):
                 egg = data.decode(ENCODE)
                 match = re.findall(r'wrong', egg)
                 if match:
-                    print('authentication denied\n')
+                    logger.debug('authentication denied\n')
                     time.sleep(4)
-                    print(data.decode(ENCODE))
+                    logger.debug(data.decode(ENCODE))
                     break
 
             if data.decode(ENCODE) != 'spam':
                 egg = data.decode(ENCODE)
                 match = re.findall(r'probe!!!', egg)
                 if match:
-                    print('probe!!!')
+                    logger.debug('probe!!!')
                     tcpCliSock.send(quit_json.encode(ENCODE))
                     time.sleep(3)
                     break

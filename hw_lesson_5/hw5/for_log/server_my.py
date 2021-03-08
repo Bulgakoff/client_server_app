@@ -73,7 +73,7 @@ def current_start_server(addr, port):
         # s_tsp.listen(5)  # клиентов 5
         server_listen_ready(s_tsp)
         logger.debug('Старт server_listen_ready')
-        print('Server in listening..........')
+        logger.debug('Server in listening..........')
 
         while True:  # бесконечный цикл сервера
             print('Waiting for client...')
@@ -102,16 +102,16 @@ def current_start_server(addr, port):
                     elif 'action' in data_dict and data_dict['action'] == 'presence':
                         msg = PROBE_json.encode(ENCODE)
                         tcpCliSock.send(msg)
-                        print('прилетел presence')
+                        logger.debug('прилетел presence')
                     elif 'action' in data_dict and data_dict['action'] == 'quit':
                         tcpCliSock.send('finish'.encode(ENCODE))
-                        print(f'прилетел quit {time.ctime()}')
+                        logger.debug(f'прилетел quit {time.ctime()}')
                     elif 'action' in data_dict and data_dict['action'] != 'authenticate':
                         for var_response in auth_response_server_list:
                             if 'response' in var_response and var_response['response'] == 402:
                                 msg = var_response['error']
                                 tcpCliSock.send(bytes(msg, ENCODE))
-                        print('ошибка auth')
+                        logger.debug('ошибка auth')
 
 
 # ==========click============
