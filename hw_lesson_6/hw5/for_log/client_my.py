@@ -61,7 +61,7 @@ ENCODE = 'utf-8'
 def py_dumps_str_foo(param_user):
     stack = inspect.stack()
     res = stack[2].function
-    print(res)
+    logging.debug(res)
     return json.dumps(param_user)
 
 
@@ -73,7 +73,7 @@ def tcp_sock_create():
 def current_start_client(addr, port):
     stack = inspect.stack()
     res = stack[5].function
-    print(res)
+    logging.debug(res)
     # auth_from_client_json = json.dumps(AUTH_CLIENT)
     auth_from_client_json = py_dumps_str_foo(AUTH_CLIENT)
     # logger.debug('Старт py_dumps_str_foo')
@@ -89,27 +89,27 @@ def current_start_client(addr, port):
         while True:
             time.sleep(3)
             tcpCliSock.send(auth_from_client_json.encode(ENCODE))
-            # print(f'Recieved auth ')
+            # logging.debug(f'Recieved auth ')
             data = tcpCliSock.recv(BUFSIZ)  # ожидание (получение) ответа
 
             if data.decode(ENCODE) == 'An optional message/notification - Ok!':
                 tcpCliSock.send(msg_presence_json.encode(ENCODE))
-                print(data.decode(ENCODE))
+                logging.debug(data.decode(ENCODE))
 
             if data.decode(ENCODE) != 'spam':
                 egg = data.decode(ENCODE)
                 match = re.findall(r'wrong', egg)
                 if match:
-                    print('authentication denied\n')
+                    logging.debug('authentication denied\n')
                     time.sleep(4)
-                    print(data.decode(ENCODE))
+                    logging.debug(data.decode(ENCODE))
                     break
 
             if data.decode(ENCODE) != 'spam':
                 egg = data.decode(ENCODE)
                 match = re.findall(r'probe!!!', egg)
                 if match:
-                    print('probe!!!')
+                    logging.debug('probe!!!')
                     tcpCliSock.send(quit_json.encode(ENCODE))
                     time.sleep(3)
                     break

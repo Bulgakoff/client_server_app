@@ -33,3 +33,7 @@
 2021-03-08 11:08:29,071 - DEBUG - Go function current_start_client from function <class 'str'> in Mon Mar  8 11:08:20 2021  = 44
 2021-03-08 11:09:15,525 - DEBUG - Старт tcp_sock_create = 87
 2021-03-08 11:09:24,545 - DEBUG - Go function current_start_client from function main in Mon Mar  8 11:09:15 2021  = 44
+2021-03-08 23:21:04,635 - DEBUG - Старт tcp_sock_create = 87
+2021-03-08 23:21:13,667 - DEBUG - Go function current_start_client from function main in Mon Mar  8 23:21:04 2021  = 44
+2021-03-08 23:22:41,904 - DEBUG - Старт tcp_sock_create = 87
+2021-03-08 23:22:50,922 - DEBUG - Go function current_start_client from function main in Mon Mar  8 23:22:41 2021  = 44
