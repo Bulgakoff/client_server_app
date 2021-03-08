@@ -45,12 +45,12 @@ def log_decorator(foo):
 
     return wrap
 
-# def log_decr(foo):
-#     def wrap(*args, **kwargs):  # если в функции есть параметры то нужен пропих
-#         foo(*args, **kwargs)
-#         logger.debug(f'Go function {foo.__name__} from function  in {times} ')
-#
-#     return wrap
+def log_decr(foo):
+    def wrap(*args, **kwargs):  # если в функции есть параметры то нужен пропих
+        foo(*args, **kwargs)
+        logger.debug(f'Go function {foo.__name__} from function {foo} in {times} ')
+
+    return wrap
 
 # ========================log===================================================
 #
@@ -60,7 +60,8 @@ ENCODE = 'utf-8'
 # @log_decr
 def py_dumps_str_foo(param_user):
     stack = inspect.stack()
-    print(stack[1].function)
+    res = stack[2].function
+    print(res)
     return json.dumps(param_user)
 
 
