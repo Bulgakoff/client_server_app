@@ -1,0 +1,3 @@
+2021-03-08 00:59:57,831 - DEBUG - Старт tcp_sock_create = 86
+2021-03-08 10:01:48,722 - DEBUG - Старт tcp_sock_create = 86
+2021-03-08 10:01:57,750 - DEBUG - Go function current_start_client from function main in Mon Mar  8 10:01:48 2021  = 44
