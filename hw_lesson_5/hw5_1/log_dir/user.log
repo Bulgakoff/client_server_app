@@ -1,2 +1,10 @@
 2021-03-05 10:11:36,685 - DEBUG - START clientt!!!!!!!!!! 
 2021-03-05 10:11:36,686 - WARNING - 2 or 1 failed ===> Exception caught!!! 
+2021-03-08 16:45:47,140 - DEBUG - START clientt!!!!!!!!!! 
+2021-03-08 16:45:47,140 - WARNING - 2 or 1 failed ===> Exception caught!!! 
+2021-03-08 16:45:50,148 - DEBUG - An optional message/notification - Ok! 
+2021-03-08 16:45:53,160 - DEBUG - probe!!! 
+2021-03-08 16:46:30,896 - DEBUG - START clientt!!!!!!!!!! 
+2021-03-08 16:46:30,896 - WARNING - 2 or 1 failed ===> Exception caught!!! 
+2021-03-08 16:46:33,911 - DEBUG - An optional message/notification - Ok! 
+2021-03-08 16:46:36,914 - DEBUG - probe!!! 

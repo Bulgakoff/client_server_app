@@ -6,19 +6,19 @@ import time
 import click
 import logging
 
-from sserver_log import setup_logging
-# def setup_logging():
-#     logger = logging.getLogger(__name__)
-#     logger.setLevel(logging.DEBUG)
-#
-#     formatter = logging.Formatter('%(name)s---%(asctime)s - %(levelname)s - %(message)s')
-#     fh = logging.FileHandler('log_dir/ser.log')
-#     fh.setFormatter(formatter)
-#     logger.addHandler(fh)
-#
-#     return logger
-#
-# logger=setup_logging()
+# from sserver_log import setup_logging
+def setup_logging():
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter('%(name)s---%(asctime)s - %(levelname)s - %(message)s')
+    fh = logging.FileHandler('log_dir/ser.log')
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+
+    return logger
+
+logger=setup_logging()
 
 # Ответы сервераa
 LIST_AUTH = [
@@ -79,17 +79,17 @@ def current_start_server(addr, port):
     with tcp_sock_create() as s_tsp:  # создаем сокет сервера
         logging.debug('tcp_sock_create!!!!!!!!!!!!!!!')
         bind_create_from_user(s_tsp, addr, port)  # связываем сокет с адресом И ПОРТОМ
-        print(f'======================')
+        logging.debug(f'======================')
         # s_tsp.listen(5)  # клиентов 5
         server_listen_ready(s_tsp)
-        print('Server in listening..........')
+        logging.debug('Server in listening..........')
 
         while True:  # бесконечный цикл сервера
-            print('Waiting for client...')
+            logging.debug('Waiting for client...')
             # tcpCliSock, addr = tcpSerSock.accept()  # ждем клиента, при соединении .accept()
             tcpCliSock, addr = s_tsp.accept()  # ждем клиента, при соединении .accept()
             with closing(tcpCliSock):
-                print(f'Connected from: {addr[0]}')
+                logging.debug(f'Connected from: {addr[0]}')
                 while True:  # цикл связи
                     # data = tcpCliSock.recv(BUFSIZ)  # принимает данные от клиента
                     data = recved_data(tcpCliSock)
@@ -109,16 +109,16 @@ def current_start_server(addr, port):
                     elif 'action' in data_dict and data_dict['action'] == 'presence':
                         msg = PROBE_json.encode(ENCODE)
                         tcpCliSock.send(msg)
-                        print('прилетел presence')
+                        logging.debug('прилетел presence')
                     elif 'action' in data_dict and data_dict['action'] == 'quit':
                         tcpCliSock.send('finish'.encode(ENCODE))
-                        print(f'прилетел quit {time.ctime()}')
+                        logging.debug(f'прилетел quit {time.ctime()}')
                     elif 'action' in data_dict and data_dict['action'] != 'authenticate':
                         for var_response in auth_response_server_list:
                             if 'response' in var_response and var_response['response'] == 402:
                                 msg = var_response['error']
                                 tcpCliSock.send(bytes(msg, ENCODE))
-                        print('ошибка auth')
+                        logging.debug('ошибка auth')
 
 
 # ==========click============
@@ -135,5 +135,5 @@ def main(addr, port):
 #     filename='qwe.log'
 # )
 if __name__ == '__main__':
-    setup_logging.debug('START server!!!!!!!!!!!!!!!')
+    logger.debug('START server!!!!!!!!!!!!!!!')
     main()
