@@ -131,7 +131,6 @@ def current_start_server(addr, port):
 @click.argument('port')
 def main(addr, port):
     current_start_server(addr, port)
-    # logging.debug('Старт current_start_server')
 
 
 if __name__ == '__main__':
