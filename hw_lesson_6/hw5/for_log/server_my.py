@@ -1,5 +1,6 @@
 import inspect
 from contextlib import closing
+from functools import wraps
 from socket import *
 import json
 import requests
@@ -29,10 +30,12 @@ PROBE = {
 
 # ========================log===================================================
 def log_decorator(foo):
+    @wraps(foo)
     def wrap(*args, **kwargs):  # если в функции есть параметры то нужен пропих
-        res = foo(*args, **kwargs)
+        stack = inspect.stack()
+        res = stack[1].function
         logger.debug(f'Go function {foo.__name__} from function {res} in {times} ')
-
+        return foo(*args, **kwargs)
     return wrap
 
 
@@ -44,68 +47,59 @@ PORT = 1111
 BUFSIZ = 2048
 ENCODE = 'utf-8'
 
-
+@log_decorator
 def tcp_sock_create():
     return socket(AF_INET, SOCK_STREAM)
 
-
+@log_decorator
 def bind_create_from_user(s_tsp, addr, port):
     return s_tsp.bind((addr, int(port)))
 
-
+@log_decorator
 def server_listen_ready(s_tsp):
     return s_tsp.listen(5)
 
-
+@log_decorator
 def recved_data(user_socket):
     return user_socket.recv(BUFSIZ)
 
-
+@log_decorator
 def b_decode_str_foo(b_data_recvd):  # from b'' (json) to str
     return b_data_recvd.decode(ENCODE)
 
-
+@log_decorator
 def str_loads_dict_foo(data_str):  # from str to  dict
     return json.loads(data_str)
 
-
+@log_decorator
 def py_dumps_str_foo(param_server):  # from py (dict) to str
     return json.dumps(param_server)
 
 
 @log_decorator
 def current_start_server(addr, port):
-    stack = inspect.stack()
-    res = stack[5].function
-    print(res)
     lst_answers_after_auth_json = py_dumps_str_foo(LIST_AUTH)
-    logging.debug('Старт py_dumps_str_foo')
     PROBE_json = py_dumps_str_foo(PROBE)
     # tcpSerSock = socket(AF_INET, SOCK_STREAM)  # создаем сокет сервера
     with tcp_sock_create() as s_tsp:  # создаем сокет сервера
-        logger.debug('Старт tcp_sock_create')
         bind_create_from_user(s_tsp, addr, port)  # связываем сокет с адресом И ПОРТОМ
-        logger.debug('Старт bind_create_from_user')
-        print(f'======================')
+        logger.debug(f'======================')
         # s_tsp.listen(5)  # клиентов 5
         server_listen_ready(s_tsp)
-        logger.debug('Старт server_listen_ready')
-        print('Server in listening..........')
+        logger.debug('Server in listening..........')
 
         while True:  # бесконечный цикл сервера
             print('Waiting for client...')
             # tcpCliSock, addr = tcpSerSock.accept()  # ждем клиента, при соединении .accept()
             tcpCliSock, addr = s_tsp.accept()  # ждем клиента, при соединении .accept()
             with closing(tcpCliSock):
-                print(f'Connected from: {addr[0]}')
+                logger.debug(f'Connected from: {addr[0]}')
                 while True:  # цикл связи
                     # data = tcpCliSock.recv(BUFSIZ)  # принимает данные от клиента
                     data = recved_data(tcpCliSock)
                     # data_dict = json.loads(data.decode(ENCODE))
                     data_str = b_decode_str_foo(data)
-                    logger.debug('Старт b_decode_str_foo')
                     data_dict = str_loads_dict_foo(data_str)
-                    logger.debug('Старт str_loads_dict_foo')
                     auth_response_server_list = json.loads(lst_answers_after_auth_json)
 
                     if not data:
@@ -119,7 +113,7 @@ def current_start_server(addr, port):
                     elif 'action' in data_dict and data_dict['action'] == 'presence':
                         msg = PROBE_json.encode(ENCODE)
                         tcpCliSock.send(msg)
-                        print('прилетел presence')
+                        logger.debug('прилетел presence')
                     elif 'action' in data_dict and data_dict['action'] == 'quit':
                         tcpCliSock.send('finish'.encode(ENCODE))
                         print(f'прилетел quit {time.ctime()}')
@@ -128,9 +122,8 @@ def current_start_server(addr, port):
                             if 'response' in var_response and var_response['response'] == 402:
                                 msg = var_response['error']
                                 tcpCliSock.send(bytes(msg, ENCODE))
-                        print('ошибка auth')
+                        logger.debug('ошибка auth')
 
-            return res
 
 # ==========click============
 @click.command()
