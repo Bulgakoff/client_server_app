@@ -1,15 +1,18 @@
 # Программа сервера для ОТПРАВКИ приветствия сервера и получения ответа
+from functools import wraps
 from socket import *
 import json
 import time
+from textwrap import wrap
+
 import click
 import requests
 import re
 import logging
 import client_log_config
 import inspect
-times=time.ctime()
-logger = logging.getLogger('app.main')
+
+times = time.ctime()
 # запросы клиента:
 quit = {
     'action': 'quit'
@@ -38,49 +41,43 @@ PRESENTS_MSG = {  # сообщение о присутствии — presence
 
 # ========================client===================================================
 # ========================log===================================================
+logger = logging.getLogger('app.main')
+
 def log_decorator(foo):
+    @wraps(foo)
     def wrap(*args, **kwargs):  # если в функции есть параметры то нужен пропих
-        res = foo(*args, **kwargs)
+        stack = inspect.stack()
+        res = stack[1].function
         logger.debug(f'Go function {foo.__name__} from function {res} in {times} ')
+        return foo(*args, **kwargs)
 
     return wrap
 
-def log_decr(foo):
-    def wrap(*args, **kwargs):  # если в функции есть параметры то нужен пропих
-        foo(*args, **kwargs)
-        logger.debug(f'Go function {foo.__name__} from function {foo} in {times} ')
 
-    return wrap
 
 # ========================log===================================================
 #
 BUFSIZ = 640
 ENCODE = 'utf-8'
 
-# @log_decr
+
+@log_decorator
 def py_dumps_str_foo(param_user):
-    stack = inspect.stack()
-    res = stack[2].function
-    logging.debug(res)
+    # stack = inspect.stack()
+    # res = stack[2].function
+    # logging.debug(res)
     return json.dumps(param_user)
 
-
+@log_decorator
 def tcp_sock_create():
     return socket(AF_INET, SOCK_STREAM)
 
 
 @log_decorator
 def current_start_client(addr, port):
-    stack = inspect.stack()
-    res = stack[5].function
-    logging.debug(res)
-    # auth_from_client_json = json.dumps(AUTH_CLIENT)
     auth_from_client_json = py_dumps_str_foo(AUTH_CLIENT)
-    # logger.debug('Старт py_dumps_str_foo')
     msg_presence_json = py_dumps_str_foo(PRESENTS_MSG)
-    # logger.debug('Старт py_dumps_str_foo')
     quit_json = py_dumps_str_foo(quit)
-    # logger.debug('Старт py_dumps_str_foo')
 
     # tcpCliSock = socket(AF_INET, SOCK_STREAM)
     with tcp_sock_create() as tcpCliSock:
@@ -114,7 +111,8 @@ def current_start_client(addr, port):
                     time.sleep(3)
                     break
 
-    return res
+
+
 # ==========click============
 
 @click.command()
