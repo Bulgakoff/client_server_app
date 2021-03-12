@@ -35,13 +35,15 @@ def write_responses(requests, w_clients, all_clients):
                 all_clients.remove(sock)
 
 
-def broadcast(msg, socket, clients_lst):
+def broadcast(msg, sk, clients_lst):
     for client in clients_lst:
-        if client != socket:
+        if client != sk:
             try:
+                print(f'===================>>>>{msg}')
                 client.send(msg)
             except:
-                pass
+                # pass
+                clients_lst.remove(sk)
 
 
 def mainloop():
