@@ -1,5 +1,7 @@
 import sys
 from socket import *
+import json
+import  time
 
 ADDRESS = ("localhost", 10000)
 
@@ -10,10 +12,16 @@ def echo_client():
     with socket(AF_INET, SOCK_STREAM) as sock:  # Создать сокет TCP
         sock.connect(ADDRESS)  # Соединиться с сервером
         while True:
-            msg = input("Ваше сообщение: ")
-            if msg == "qq":
-                break
-            sock.send(msg.encode("utf-8"))  # Отправить!
+            msg_py = {
+                "action": "msg",
+                "time": 123,
+                "to": "#room_name",
+                "from": "account_name",
+                "message": "Hello World"
+            }
+            msg_str = json.dumps(msg_py)
+            sock.send(msg_str.encode("utf-8"))  # Отправить!
+            time.sleep(2)
             data = sock.recv(1024).decode("utf-8")
             print("Ответ:", data)
 

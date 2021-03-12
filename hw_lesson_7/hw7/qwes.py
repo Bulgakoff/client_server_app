@@ -1,70 +1,60 @@
 import select
-from socket import socket, AF_INET, SOCK_STREAM
+from socket import AF_INET, SOCK_STREAM, socket
+import json
 
 
-def read_requests(r_clietns, all_clients_list):
-    responses = {}
-    for sock in r_clietns:
+def disconnect_client(sock, all_clients):
+    print(f"Клиент {sock.fileno()} {sock.getpeername()} отключился")
+    sock.close()
+    all_clients.remove(sock)
+
+
+def read_requests(r_clients, all_clients):
+    responses = {}  # Словарь ответов сервера вида {сокет: запрос}
+
+    for sock in r_clients:
         try:
-            message_to_send = sock.recv(1024).decode("utf-8")
-            responses[sock] = message_to_send
-            broadcast(message_to_send, sock, all_clients_list)
+            data_str = sock.recv(1024).decode("utf-8")
+            responses[sock] = data_str
+
         except:
-            print("Клиент {} {} отключился".format(sock.fileno()
-                                                   , sock.getpeername()))
-            all_clients_list.remove(sock)
-        # else:
+            disconnect_client(sock, all_clients)
 
     return responses
 
 
 def write_responses(requests, w_clients, all_clients):
-    """ Эхо-ответ сервера клиентам, от которых были запросы
-    """
     for sock in w_clients:
-        if sock in requests:
+        for recv_sock, data in requests.items():
+            if sock is recv_sock:
+                continue
+
             try:
-                # Подготовить и отправить ответ сервера
-                resp = requests[sock].encode("utf-8")
-                # Эхо-ответ сделаем чуть непохожим на оригинал
-                sock.send(resp.upper())
+                data_py = json.loads(data)
+                msgs_for_back = data_py['message']
+                responce = msgs_for_back.encode("ascii")
+                sock.send(responce)
             except:  # Сокет недоступен, клиент отключился
-                print(f"Клиент {sock.fileno()} {sock.getpeername()} отключился")
-
-                sock.close()
-                all_clients.remove(sock)
-
-
-def broadcast(msg, sk, clients_lst):
-    for client in clients_lst:
-        if client != sk:
-            try:
-                print(f'===================>>>>{msg}')
-                client.send(msg)
-            except:
-                # pass
-                clients_lst.remove(sk)
+                disconnect_client(sock, all_clients)
 
 
 def mainloop():
-    """ Основной цикл обработки запросов клиентов
-    """
     address = ("", 10000)
     clients = []
 
-    with socket(AF_INET, SOCK_STREAM) as s:
+    s = socket(AF_INET, SOCK_STREAM)
+    try:
         s.bind(address)
         s.listen(5)
         s.settimeout(0.2)  # Таймаут для операций с сокетом
         while True:
             try:
                 conn, addr = s.accept()  # Проверка подключений
-            except OSError as e:
+            except OSError:
                 pass  # timeout вышел
             else:
-                print("Получен запрос на соединение от %s" % str(addr))
+                print(f"Получен запрос на соединение от {addr}")
                 clients.append(conn)
-                print(f'=============={clients}')
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
@@ -75,11 +65,14 @@ def mainloop():
                 except:
                     pass  # Ничего не делать, если какой-то клиент отключился
 
-                # print(f'=--rr after recv---{r}')
-                # print(f'=ww after send={w}')
-                requests = read_requests(r, clients)  # ПРинимаем запросы клиентов
-            if requests:
-                write_responses(requests, w, clients)  # формируем ответ и отправляем его
+                requests = read_requests(r, clients)  # Сохраним запросы клиентов
+                write_responses(
+                    requests, w, clients
+                )  # Выполним отправку ответов клиентам
+    finally:
+        for sock in clients:
+            sock.close()
+        s.close()
 
 
 print("Эхо-сервер запущен!")
