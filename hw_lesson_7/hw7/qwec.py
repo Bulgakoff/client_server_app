@@ -1,7 +1,7 @@
 import sys
 from socket import *
 import json
-import  time
+import time
 
 ADDRESS = ("localhost", 10000)
 
@@ -14,16 +14,21 @@ def echo_client():
         while True:
             msg_py = {
                 "action": "msg",
-                "time": 123,
+                "time": time.ctime(),
                 "to": "#room_name",
                 "from": "account_name",
                 "message": "Hello World"
             }
+            join_chat = {"action": "join",
+                         "time": time.ctime(),
+                         "room": "#room_name"}
             msg_str = json.dumps(msg_py)
             sock.send(msg_str.encode("utf-8"))  # Отправить!
             time.sleep(2)
             data = sock.recv(1024).decode("utf-8")
             print("Ответ:", data)
+
+
 
 
 if __name__ == "__main__":

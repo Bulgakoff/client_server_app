@@ -1,7 +1,7 @@
 import select
 from socket import AF_INET, SOCK_STREAM, socket
 import json
-
+import  time
 
 def disconnect_client(sock, all_clients):
     print(f"Клиент {sock.fileno()} {sock.getpeername()} отключился")
@@ -28,12 +28,13 @@ def write_responses(requests, w_clients, all_clients):
         for recv_sock, data in requests.items():
             if sock is recv_sock:
                 continue
-
             try:
                 data_py = json.loads(data)
-                msgs_for_back = data_py['message']
-                responce = msgs_for_back.encode("ascii")
-                sock.send(responce)
+                if data_py['action']=="msg":
+                    msgs_for_back = data_py['message']
+                    responce = msgs_for_back.encode("ascii")
+                    time.sleep(2)
+                    sock.send(responce)
             except:  # Сокет недоступен, клиент отключился
                 disconnect_client(sock, all_clients)
 
