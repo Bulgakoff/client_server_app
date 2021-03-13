@@ -33,7 +33,6 @@ def write_responses(requests, w_clients, all_clients):
                 if data_py['action']=="msg":
                     msgs_for_back = data_py['message']
                     responce = msgs_for_back.encode("ascii")
-                    time.sleep(2)
                     sock.send(responce)
             except:  # Сокет недоступен, клиент отключился
                 disconnect_client(sock, all_clients)
