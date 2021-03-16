@@ -3,6 +3,7 @@
 import sys
 from socket import *
 
+from m_chat.disconnector import Disconnector
 from m_chat.messages_handler import MessageHandler
 from m_chat.serializer import Serializer
 from m_chat.message_processor import MessageProcessor
@@ -19,7 +20,7 @@ def echo_client():
         sock.connect(ADDRESS)  # Соединиться с сервером
 
         send_buffer = SendBuffer()
-        msg_processor = MessageProcessor(send_buffer)
+        msg_processor = MessageProcessor(send_buffer,Disconnector(send_buffer))
         msg_receiver = MessageHandler(msg_processor)
         MessageSplitter(msg_receiver)
 
