@@ -2,11 +2,17 @@ import socket
 import json
 
 
-# оберткa над буфером с исходящими данными
+# для исходящих сообщений
 class SendBuffer:
-    def __init__(self, msg_handler=None):
+    """оберткa над буфером с исходящими данными"""
+
+    def __init__(self):
         self._out_data = b''
-        self._msg_handler = msg_handler
+        self._should_close = False
+
+    @property
+    def data_out(self):
+        return self._out_data
 
     def send(self, data):
         self._out_data += data
@@ -14,4 +20,5 @@ class SendBuffer:
     def bytes_sent(self, size):
         self._out_data = self._out_data[size:]
 
-#
+    def close(self):
+        self._should_close = True

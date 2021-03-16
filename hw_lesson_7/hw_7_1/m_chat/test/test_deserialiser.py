@@ -17,4 +17,4 @@ def test_deserialize_responce():
     # =====--------------------------
     exit_msg_py_2 = json.loads(msg_str)
     sut = Deserializer()
-    assert sut.deserialize(enter_msg_bytes) == msg_str
+    assert sut.deserialize(enter_msg_bytes) == exit_msg_py_2

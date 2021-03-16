@@ -1,6 +1,7 @@
 import select
 from socket import AF_INET, SOCK_STREAM, socket
 from m_chat.send_buffer import SendBuffer
+from m_chat.message_splitter import MessageSplitter
 
 
 def disconnect_client(sock, all_clients):
@@ -14,13 +15,18 @@ def read_requests(r_clients, all_clients):
 
     for sock in r_clients:
         try:
-            # data_str = sock.recv(1024).decode("ascii")
+            data_str = sock.recv(1024).decode("ascii")
             data_bytes = sock.recv(1024)
-            # responses[sock] = data_str
-            responses[sock].feed_data(data_bytes)
+            responses[sock] = data_str
+
+            # responses[sock].feed_data(data_bytes)
+            # data = sock.recv(1024)
+            # _, msg_splitter = all_clients[sock]
+            # msg_splitter.feed_data(data)
 
         except:
             disconnect_client(sock, all_clients)
+
 
     return responses
 
@@ -53,8 +59,9 @@ def mainloop():
             except OSError:
                 pass  # timeout вышел
             else:
-                print(f"Получен запрос на соединение от {addr}")
-                clients.append(conn)
+                # print(f"Получен запрос на соединение от {addr}")
+                # clients.append(conn)
+                clients[conn] = (SendBuffer(), MessageSplitter())
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5

@@ -11,5 +11,5 @@ class Deserializer:
 
     def deserialize(self, msg_bytes):
         msg_bytes_str = msg_bytes.decode(self._encodding)
-        # exit_msg_by = self._loads(msg_bytes_str)
-        return msg_bytes_str
+        exit_msg_by = self._loads(msg_bytes_str)
+        return exit_msg_by
