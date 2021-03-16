@@ -19,33 +19,26 @@ def read_requests(r_clients, all_clients):
 
     for sock in r_clients:
         try:
-            data_str = sock.recv(1024).decode("ascii")
-            data_bytes = sock.recv(1024)
-            responses[sock] = data_str
-
-            # responses[sock].feed_data(data_bytes)
-            # data = sock.recv(1024)
-            # _, msg_splitter = all_clients[sock]
-            # msg_splitter.feed_data(data)
+            data = sock.recv(1024)
+            _, msg_splitter = all_clients[sock]
+            msg_splitter.feed_data(data)
 
         except:
             disconnect_client(sock, all_clients)
-
 
     return responses
 
 
 def write_responses(requests, w_clients, all_clients):
     for sock in w_clients:
-        for recv_sock, data in requests.items():
-            if sock is recv_sock:
-                continue
-
-            try:
-                resp = data.encode("ascii")
-                sock.send(resp)
-            except:  # Сокет недоступен, клиент отключился
-                disconnect_client(sock, all_clients)
+        try:
+            send_buffer, _ = all_clients[sock]
+            sent_size = sock.send(send_buffer._out_data)
+            send_buffer.bytes_send(sent_size)
+            # resp = data.encode("ascii")
+            # sock.send(resp)
+        except:  # Сокет недоступен, клиент отключился
+            disconnect_client(sock, all_clients)
 
 
 def mainloop():
@@ -65,7 +58,7 @@ def mainloop():
             else:
                 # print(f"Получен запрос на соединение от {addr}")
                 # clients.append(conn)
-                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),Disconnector(SendBuffer())))
+                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(), Disconnector(SendBuffer())))
                 clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever))
             finally:
                 # Проверить наличие событий ввода-вывода
