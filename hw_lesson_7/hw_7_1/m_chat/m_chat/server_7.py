@@ -1,5 +1,9 @@
 import select
 from socket import AF_INET, SOCK_STREAM, socket
+
+from m_chat.disconnector import Disconnector
+from m_chat.message_processor import MessageProcessor
+from m_chat.messages_handler import MessageHandler
 from m_chat.send_buffer import SendBuffer
 from m_chat.message_splitter import MessageSplitter
 
@@ -61,7 +65,8 @@ def mainloop():
             else:
                 # print(f"Получен запрос на соединение от {addr}")
                 # clients.append(conn)
-                clients[conn] = (SendBuffer(), MessageSplitter())
+                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),Disconnector(SendBuffer())))
+                clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever))
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
