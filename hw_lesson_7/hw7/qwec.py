@@ -12,23 +12,21 @@ def echo_client():
     with socket(AF_INET, SOCK_STREAM) as sock:  # Создать сокет TCP
         sock.connect(ADDRESS)  # Соединиться с сервером
         while True:
-            msg_py = {
-                "action": "msg",
-                "time": time.ctime(),
-                "to": "#room_name",
-                "from": "account_name",
-                "message": "Hello World"
-            }
-            join_chat = {"action": "join",
-                         "time": time.ctime(),
-                         "room": "#room_name"}
+            msg_py = {"action": "authenticate",
+                      "time": 123,
+                      "user": {
+                          "account_name": "C0deMaver1ck",
+                          "password": "CorrectHorseBatterStaple"
+                      }
+                      }
+            # join_chat = {"action": "join",
+            #              "time": time.ctime(),
+            #              "room": "#room_name"}
             msg_str = json.dumps(msg_py)
             sock.send(msg_str.encode("utf-8"))  # Отправить!
             time.sleep(2)
             data = sock.recv(1024).decode("utf-8")
             print("Ответ:", data)
-
-
 
 
 if __name__ == "__main__":

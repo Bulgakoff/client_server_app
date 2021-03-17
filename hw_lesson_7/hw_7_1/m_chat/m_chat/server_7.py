@@ -19,6 +19,10 @@ def read_requests(r_clients, all_clients):
 
     for sock in r_clients:
         try:
+            # data = sock.recv(1024)
+            # responses[sock] = data
+            # responses[sock].feed_data(data)
+
             data = sock.recv(1024)
             _, msg_splitter = all_clients[sock]
             msg_splitter.feed_data(data)
@@ -32,11 +36,12 @@ def read_requests(r_clients, all_clients):
 def write_responses(requests, w_clients, all_clients):
     for sock in w_clients:
         try:
+            # sent_size = sock.send(all_clients[sock]._out_data)
+            # all_clients[sock].bytes_sent(sent_size)
+
             send_buffer, _ = all_clients[sock]
             sent_size = sock.send(send_buffer._out_data)
-            send_buffer.bytes_send(sent_size)
-            # resp = data.encode("ascii")
-            # sock.send(resp)
+            send_buffer.bytes_sent(sent_size)
         except:  # Сокет недоступен, клиент отключился
             disconnect_client(sock, all_clients)
 
@@ -61,7 +66,7 @@ def mainloop():
                 msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
                                                                Disconnector(SendBuffer())
                                                                ))
-                clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever))
+                clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever)) # ????
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
@@ -78,7 +83,7 @@ def mainloop():
                 )  # Выполним отправку ответов клиентам
     finally:
         for sock in clients:
-            sock.close()#  ?????????????????????
+            sock.close()  # ?????????????????????
         s.close()
 
 

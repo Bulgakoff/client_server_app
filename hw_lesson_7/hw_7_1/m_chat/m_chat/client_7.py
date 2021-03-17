@@ -1,8 +1,9 @@
 #  Программа клиента, отправляющего/читающего простые текстовые сообщения на сервер
 
 import sys
+import time
 from socket import *
-
+import json
 from m_chat.disconnector import Disconnector
 from m_chat.messages_handler import MessageHandler
 from m_chat.serializer import Serializer
@@ -20,17 +21,24 @@ def echo_client():
         sock.connect(ADDRESS)  # Соединиться с сервером
 
         send_buffer = SendBuffer()
-        msg_processor = MessageProcessor(send_buffer,Disconnector(send_buffer))
+        msg_processor = MessageProcessor(send_buffer, Disconnector(send_buffer))
         msg_receiver = MessageHandler(msg_processor)
         MessageSplitter(msg_receiver)
 
         while True:
-            msg = input("Ваше сообщение: ")
-            if msg == "exit":
-                break
-            sock.send(msg.encode("ascii"))  # Отправить!
-            data = sock.recv(1024).decode("ascii")
+            msg_py = {"action": "authenticate",
+                   "time": 123,
+                   "user": {
+                       "account_name": "C0deMaver1ck",
+                       "password": "CorrectHorseBatterStaple"
+                   }
+                   }
+            msg_str = json.dumps(msg_py)
+            sock.send(msg_str.encode("utf-8"))  # Отправить!
+            time.sleep(2)
+            data = sock.recv(1024).decode("utf-8")
             print("Ответ:", data)
+
 
 
 if __name__ == "__main__":
