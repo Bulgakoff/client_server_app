@@ -22,7 +22,6 @@ def read_requests(r_clients, all_clients):
             # data = sock.recv(1024)
             # responses[sock] = data
             # responses[sock].feed_data(data)
-
             data = sock.recv(1024)
             _, msg_splitter = all_clients[sock]
             msg_splitter.feed_data(data)
@@ -38,7 +37,6 @@ def write_responses(requests, w_clients, all_clients):
         try:
             # sent_size = sock.send(all_clients[sock]._out_data)
             # all_clients[sock].bytes_sent(sent_size)
-
             send_buffer, _ = all_clients[sock]
             sent_size = sock.send(send_buffer._out_data)
             send_buffer.bytes_sent(sent_size)
