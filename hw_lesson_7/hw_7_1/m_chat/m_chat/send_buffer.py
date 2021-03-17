@@ -15,10 +15,14 @@ class SendBuffer:
         return self._out_data
 
     def send(self, data):
+        """эту функцию вызывает код,
+         который хочет что-дибо отправить"""
         self._out_data += data
 
     def bytes_sent(self, size):
-        self._out_data = self._out_data[size:]
+        """  сообщает о том, что size байтов было отправлено
+       # вызывается из соответствующего колбэка """
+        self._out_data += self._out_data[size:]
 
     def close(self):
         self._should_close = True
