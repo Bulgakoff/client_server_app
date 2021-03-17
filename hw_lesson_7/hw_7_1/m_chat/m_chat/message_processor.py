@@ -22,6 +22,21 @@ class MessageProcessor:
             presence = Presence('Bob', '"Yep, I am here!"')
             data = self._serializer.serialize(presence)
             self._send_buffer.send(data)
+    def on_auth(self, msg_data_class):
+        # добавляем в список клиентов
+        if msg_data_class.action  != "authenticate":
+            response_err = ResponceError('402','epic fail')
+            data = self._serializer.serialize(response_err)
+            self._send_buffer.send(data)
+        else:
+            responce_ok = Responce('200','okok')
+            data = self._serializer.serialize(responce_ok)
+            self._send_buffer.send(data)
+            # как выглядит добавление в список клиентов?
 
 
-S
+
+
+
+
+

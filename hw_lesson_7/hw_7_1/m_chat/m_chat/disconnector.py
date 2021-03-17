@@ -10,7 +10,7 @@ class Disconnector:
         self._serializer = serializer
 
     def disconnect(self):
-        """Прерывает  работу  и отсылает quit"""
+        """Прерывает (как???) работу  и отсылает quit"""
         quit_msg = AnwQuit('quit')
         data = self._serializer.serialize(quit_msg)
         self._send_buffer.send(data)

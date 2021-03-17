@@ -18,12 +18,6 @@ class MessageSplitter:
         self._desialiser = deserializer
         self._msg_parser_py = msg_parser
 
-    # def feed_data(self, data):
-    #     # вызывается из соответствующего колбэка
-    #     self._data += data
-    #     msg_data_class = ...  # тут поиск и отделение отдельного сообщения
-    #     self._msg_deserializer.on_message(msg_data) 
-    #     self._msg_handler.on_msg(msg_data_class) \\\\\\\
 
     def feed_data(self, data_bytes):  # recv(...)
         """для входящих сообщений"""

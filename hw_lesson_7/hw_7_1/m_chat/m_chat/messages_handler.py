@@ -8,4 +8,7 @@ class MessageHandler:
     def on_msg(self, msg):
         if isinstance(msg, Responce):
             self._message_processor.on_auth_response(msg)
+        elif isinstance(msg, Authenticate):
+            self._message_processor.on_auth(msg)
+
 

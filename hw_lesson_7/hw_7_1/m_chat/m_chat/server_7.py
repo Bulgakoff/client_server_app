@@ -58,7 +58,9 @@ def mainloop():
             else:
                 # print(f"Получен запрос на соединение от {addr}")
                 # clients.append(conn)
-                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(), Disconnector(SendBuffer())))
+                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
+                                                               Disconnector(SendBuffer())
+                                                               ))
                 clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever))
             finally:
                 # Проверить наличие событий ввода-вывода
@@ -76,7 +78,7 @@ def mainloop():
                 )  # Выполним отправку ответов клиентам
     finally:
         for sock in clients:
-            sock.close()
+            sock.close()#  ?????????????????????
         s.close()
 
 

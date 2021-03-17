@@ -18,8 +18,8 @@ class Client:
         self._serializer = serializer
         # self._deserializer = deserializer
 
-    def on_auth_response(self, msg_data_class):
-       pass
+    # def on_auth_response(self, msg_data_class):
+    #    pass
 
     # def authenticate(self, password):
     #     obj_A_msg = Authenticate(self._account_name,
