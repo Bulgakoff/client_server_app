@@ -22,7 +22,7 @@ class SendBuffer:
     def bytes_sent(self, size):
         """  сообщает о том, что size байтов было отправлено
        # вызывается из соответствующего колбэка """
-        self._out_data += self._out_data[size:]
+        self._out_data = self._out_data[size:]
 
     def close(self):
         self._should_close = True
