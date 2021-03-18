@@ -46,7 +46,7 @@ def write_responses(requests, w_clients, all_clients):
 
 def mainloop():
     address = ("", 10000)
-    clients = {}
+    clients = []
 
     s = socket(AF_INET, SOCK_STREAM)
     try:
