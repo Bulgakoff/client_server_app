@@ -46,7 +46,7 @@ def write_responses(requests, w_clients, all_clients):
 
 def mainloop():
     address = ("", 10000)
-    clients = []
+    clients = {}
 
     s = socket(AF_INET, SOCK_STREAM)
     try:
@@ -64,7 +64,7 @@ def mainloop():
                 msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
                                                                Disconnector(SendBuffer())
                                                                ))
-                clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever)) # ????
+                clients[conn] = (SendBuffer(), MessageSplitter(msg_reciever))
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
