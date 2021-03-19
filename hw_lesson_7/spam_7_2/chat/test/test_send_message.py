@@ -1,6 +1,6 @@
 import  pytest
 
-from chat.select.select import accept_connection
+from chat.selecttt.select import accept_connection
 
 
 def test_accept_connection():
