@@ -61,10 +61,18 @@ def mainloop():
             else:
                 # print(f"Получен запрос на соединение от {addr}")
                 # clients.append(conn)
-                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
-                                                               Disconnector(SendBuffer(),s)
-                                                               ))
-                clients=(SendBuffer(), MessageSplitter(msg_reciever))
+                # ===============================================
+                send_buffer = SendBuffer()
+                disconnector = Disconnector(send_buffer)
+                msg_processor=MessageProcessor(send_buffer,disconnector)
+                msg_reciever = MessageHandler(msg_processor)
+                clients.append((send_buffer, MessageSplitter(msg_reciever), disconnector))
+                msg_processor.register(send_buffer, disconnector)
+                # =============================================
+                # msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
+                #                                                Disconnector(SendBuffer(),s)
+                #                                                ))
+                # clients=(SendBuffer(), MessageSplitter(msg_reciever))
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
