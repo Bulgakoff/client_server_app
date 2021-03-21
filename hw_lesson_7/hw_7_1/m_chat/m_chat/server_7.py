@@ -35,8 +35,8 @@ def read_requests(r_clients, all_clients):
 def write_responses(requests, w_clients, all_clients):
     for sock in w_clients:
         try:
-            # sent_size = sock.send(all_clients[sock]._out_data)
-            # all_clients[sock].bytes_sent(sent_size)
+            sent_size = sock.send(all_clients[sock]._out_data)
+            all_clients[sock].bytes_sent(sent_size)
             send_buffer, _ = all_clients[sock]
             sent_size = sock.send(send_buffer._out_data)
             send_buffer.bytes_sent(sent_size)
@@ -46,13 +46,16 @@ def write_responses(requests, w_clients, all_clients):
 
 def mainloop():
     address = ("", 10000)
-    clients = []
+    clients =[]
 
     s = socket(AF_INET, SOCK_STREAM)
     try:
         s.bind(address)
         s.listen(5)
         s.settimeout(0.2)  # Таймаут для операций с сокетом
+        send_buffer = SendBuffer()
+        disconnector = Disconnector(send_buffer)
+        msg_processor = MessageProcessor(send_buffer, disconnector)
         while True:
             try:
                 conn, addr = s.accept()  # Проверка подключений
@@ -61,10 +64,18 @@ def mainloop():
             else:
                 # print(f"Получен запрос на соединение от {addr}")
                 # clients.append(conn)
-                msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
-                                                               Disconnector(SendBuffer(),s)
-                                                               ))
-                clients=(SendBuffer(), MessageSplitter(msg_reciever))
+                # ===============================================
+                msg_reciever = MessageHandler(msg_processor)
+                msg_splitter = MessageSplitter(msg_reciever)
+                clients.append((send_buffer, msg_splitter, disconnector))
+                # clients[s] = (send_buffer, MessageSplitter(msg_reciever), disconnector)
+                msg_processor.register(send_buffer, disconnector)
+                # =============================================
+                # msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
+                #                                                Disconnector(SendBuffer(),s)
+                #                                                ))
+                # clients=(SendBuffer(), MessageSplitter(msg_reciever))
+                # clients[s] = (send_buffer, MessageSplitter(msg_reciever), disconnetor)
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
@@ -80,9 +91,9 @@ def mainloop():
                     requests, w, clients
                 )  # Выполним отправку ответов клиентам
     finally:
-        for sock in clients:
-            # sock.close()  # ?????????????????????
-            sock.close()
+        # for sock in clients:
+        #
+        #     sock.close()  # ?????????????????????
         s.close()
 
 
