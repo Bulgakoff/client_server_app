@@ -69,7 +69,6 @@ def mainloop():
                 msg_splitter = MessageSplitter(msg_reciever)
                 clients.append((send_buffer, msg_splitter, disconnector))
                 # clients[s] = (send_buffer, MessageSplitter(msg_reciever), disconnector)
-                msg_processor.register(send_buffer, disconnector)
                 # =============================================
                 # msg_reciever = MessageHandler(MessageProcessor(SendBuffer(),
                 #                                                Disconnector(SendBuffer(),s)
@@ -91,9 +90,8 @@ def mainloop():
                     requests, w, clients
                 )  # Выполним отправку ответов клиентам
     finally:
-        # for sock in clients:
-        #
-        #     sock.close()  # ?????????????????????
+        for sock in clients:
+            sock.close()  # ?????????????????????
         s.close()
 
 
