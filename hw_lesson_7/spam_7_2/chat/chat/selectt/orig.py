@@ -22,6 +22,6 @@ while True:
         else:
             responce = 'Hello bro!\n'.encode()
             client_socket.send(responce)
-    print('end[[[[[[[[[[[[[[[[[[[[jjjjjjjjjjj')
+    print('end')
     client_socket.close()
 

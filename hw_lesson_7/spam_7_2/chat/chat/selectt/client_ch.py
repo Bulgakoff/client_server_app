@@ -1,5 +1,5 @@
 from socket import AF_INET, SOCK_STREAM,socket
-
+import time
 HOST = '127.0.0.1'  # локальный адрес localhost или 127.0.0.1
 PORT = 1111  # порт на котором работает сервер
 BUFSIZ = 4096
@@ -12,6 +12,7 @@ s.send(msg.encode(ENCODE))
 data = s.recv(BUFSIZ) # получаем данные от сервера
 print("Сообщение от сервера: ", data.decode(ENCODE),
       ", длиной ", len(data), " байт")
+time.sleep(5)
 s.close()
 # client_sock = socket(AF_INET, SOCK_STREAM)
 # # client_sock.setsockopt(SOL_SOCKET,SO_REUSEADDR,1)
