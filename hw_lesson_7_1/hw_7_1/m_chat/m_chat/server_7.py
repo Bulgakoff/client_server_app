@@ -46,13 +46,16 @@ def write_responses(requests, w_clients, all_clients):
 
 def mainloop():
     address = ("", 10000)
-    clients = []
+    clients =[]
 
     s = socket(AF_INET, SOCK_STREAM)
     try:
         s.bind(address)
         s.listen(5)
         s.settimeout(0.2)  # Таймаут для операций с сокетом
+        send_buffer = SendBuffer()
+        disconnector = Disconnector(send_buffer)
+        msg_processor = MessageProcessor(send_buffer, disconnector)
         while True:
             try:
                 conn, addr = s.accept()  # Проверка подключений
@@ -62,9 +65,6 @@ def mainloop():
                 # print(f"Получен запрос на соединение от {addr}")
                 # clients.append(conn)
                 # ===============================================
-                send_buffer = SendBuffer()
-                disconnector = Disconnector(send_buffer)
-                msg_processor=MessageProcessor(send_buffer,disconnector)
                 msg_reciever = MessageHandler(msg_processor)
                 clients.append((send_buffer, MessageSplitter(msg_reciever), disconnector))
                 msg_processor.register(send_buffer, disconnector)
@@ -73,6 +73,7 @@ def mainloop():
                 #                                                Disconnector(SendBuffer(),s)
                 #                                                ))
                 # clients=(SendBuffer(), MessageSplitter(msg_reciever))
+                # clients[s] = (send_buffer, MessageSplitter(msg_reciever), disconnetor)
             finally:
                 # Проверить наличие событий ввода-вывода
                 wait = 5
@@ -88,9 +89,9 @@ def mainloop():
                     requests, w, clients
                 )  # Выполним отправку ответов клиентам
     finally:
-        for sock in clients:
-            # sock.close()  # ?????????????????????
-            sock.close()
+        # for sock in clients:
+        #
+        #     sock.close()  # ?????????????????????
         s.close()
 
 
