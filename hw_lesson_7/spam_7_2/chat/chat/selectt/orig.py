@@ -1,4 +1,30 @@
 import socket
+import json
+import time
+import re
+
+# запросы клиента:
+quit = {
+    'action': 'quit'
+}
+AUTH_CLIENT = {
+    'action': 'authenticate',
+    # 'action': 'dfgdfg',
+    'time': time.ctime(),
+    'user': {
+        'account_name': 'C0deMaver1ck',
+        'password': 'CorrectHorseBatterStaple'
+    }
+}
+PRESENTS_MSG = {  # сообщение о присутствии — presence
+    'action': 'presence',
+    'time': time.ctime(),
+    'type': 'status',
+    'user': {
+        'account_name': 'C0deMaver1ck',
+        'status': 'Yep, I am here!'
+    }
+}
 
 HOST = ""  # адрес хоста (сервера) пустой означает использование любого доступного адреса
 PORT = 2222  # номер порта на котором работает сервер (от 0 до 65525, порты до 1024 зарезервированы для системы, порты TCP и UDP не пересекаются)
@@ -10,7 +36,6 @@ print(server_socket, '==========================')
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind(('localhost', 1111))  # связываем сокет с адресом
 server_socket.listen(5)
-
 while True:
     print('Waiting for client....or..')
     client_socket, addr = server_socket.accept()
